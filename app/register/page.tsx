@@ -253,7 +253,7 @@ export default function RegisterPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="individual">Individual</SelectItem>
-                  <SelectItem value="instructor">Instructor</SelectItem>
+                  <SelectItem value="instructor">Group Leader</SelectItem>
                   <SelectItem value="student">Student</SelectItem>
                 </SelectContent>
               </Select>
