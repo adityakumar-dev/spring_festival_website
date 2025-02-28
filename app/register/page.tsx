@@ -134,9 +134,9 @@ export default function RegisterPage() {
     switch (step) {
       case 1:
         return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold mb-6">Basic Information</h2>
-            <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-4 sm:space-y-6">
+            <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Basic Information</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
                   First Name
@@ -177,7 +177,7 @@ export default function RegisterPage() {
               <label className="text-sm font-medium text-gray-700">
                 ID Type
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                 {["aadhar", "pan", "driving_license", "passport", "voter_id"].map((type) => (
                   <div
                     key={type}
@@ -314,7 +314,7 @@ export default function RegisterPage() {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">
-              Additional Information
+              Upload Your Image
             </h2>
 
             <div className="space-y-2">
@@ -343,6 +343,17 @@ export default function RegisterPage() {
                 "Complete Registration"
               )}
             </button>
+            {api.latest_visitor_card && (
+            <div className="mt-4">
+              <Link 
+                href={api.base(api.latest_visitor_card)} 
+                className="w-full flex items-center justify-center gap-2 bg-yellow-100 text-yellow-600 px-6 py-3 rounded-lg hover:bg-yellow-200 transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                Download Your Entry Pass
+              </Link>
+            </div>
+            )}
           </div>
         );
 
@@ -354,18 +365,18 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-12">
-      <div className="container mx-auto px-6">
+    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-6 sm:py-12">
+      <div className="container mx-auto px-4 sm:px-6">
         <Link
           href="/"
-          className="inline-flex items-center text-yellow-600 hover:text-yellow-700 mb-8"
+          className="inline-flex items-center text-yellow-600 hover:text-yellow-700 mb-4 sm:mb-8"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home
         </Link>
 
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-          <div className="mb-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-4 sm:p-8">
+          <div className="mb-6 sm:mb-8">
             <div className="flex justify-between mb-4">
               {[1, 2, 3].map((stepNumber) => (
                 <div
@@ -376,7 +387,7 @@ export default function RegisterPage() {
                 />
               ))}
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-xs sm:text-sm">
               <span className={step >= 1 ? "text-yellow-600" : "text-gray-400"}>
                 Basic Info
               </span>
@@ -391,13 +402,13 @@ export default function RegisterPage() {
 
           {renderStep()}
 
-          <div className="flex justify-between mt-8">
+          <div className="flex justify-between mt-6 sm:mt-8">
             {step > 1 && (
               <button
                 onClick={() => setStep(step - 1)}
-                className="flex items-center text-yellow-600 hover:text-yellow-700"
+                className="flex items-center text-yellow-600 hover:text-yellow-700 text-sm sm:text-base"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Previous
               </button>
             )}
@@ -481,8 +492,9 @@ export default function RegisterPage() {
                     return;
                   } else if (
                     step == 2 &&
-                    formData.userType == "student" &&
-                    formData.institutionId == ""
+                    (formData.userType == "student" || formData.userType == "instructor") &&
+                    formData.institutionId == "" &&
+                    formData.institutionName == ""
                   ) {
                     alert("Please Choose an institution");
                     return;
@@ -493,12 +505,12 @@ export default function RegisterPage() {
                   }
                 }}
                 // disabled={isValidatingAadhar}
-                className="ml-auto flex items-center bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 disabled:bg-yellow-400 disabled:cursor-not-allowed"
+                className="ml-auto flex items-center bg-yellow-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-yellow-700 disabled:bg-yellow-400 disabled:cursor-not-allowed text-sm sm:text-base"
               >
                  
                   <>
                     Next
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
                   </>
                 
               </button>

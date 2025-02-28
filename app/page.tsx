@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Users, ShieldCheck, Calendar, CheckCircle } from "lucide-react"
 import { HowItWorks } from "./landing/how-it-works"
 import { useState, useEffect } from "react"
+import { LoadingBar } from "@/components/loading-bar"
 
 export default function LandingPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -42,7 +43,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
-
+      <LoadingBar />
       <header className="w-full relative bg-cover bg-center h-screen">
         {images.map((image, index) => (
           <div
@@ -76,21 +77,30 @@ export default function LandingPage() {
             </button>
 
             {/* Navigation Links */}
-            <div className={`${mobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6 w-full md:w-auto`}>
+            <div className={`${mobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6 w-full md:w-auto bg-black/50 md:bg-transparent p-4 md:p-0 absolute md:relative top-full left-0 md:top-auto`}>
               <button
-                onClick={() => scrollToSection('how-it-works')}
+                onClick={() => {
+                  scrollToSection('how-it-works');
+                  setMobileMenuOpen(false);
+                }}
                 className="text-white font-semibold hover:text-blue-200 transition-colors w-full md:w-auto text-center py-2 md:py-0"
               >
                 Guide
               </button>
               <button
-                onClick={() => scrollToSection('features')}
+                onClick={() => {
+                  scrollToSection('features');
+                  setMobileMenuOpen(false);
+                }}
                 className="text-white font-semibold hover:text-blue-200 transition-colors w-full md:w-auto text-center py-2 md:py-0"
               >
                 Features
               </button>
               <button
-                onClick={() => scrollToSection('faq')}
+                onClick={() => {
+                  scrollToSection('faq');
+                  setMobileMenuOpen(false);
+                }}
                 className="text-white font-semibold hover:text-blue-200 transition-colors w-full md:w-auto text-center py-2 md:py-0"
               >
                 FAQ
@@ -104,12 +114,12 @@ export default function LandingPage() {
             </div>
           </div>
         </nav>
-        <div className="flex flex-col items-center justify-center h-[calc(100vh-80px)] px-4">
+        <div className="flex flex-col items-center justify-center h-[calc(100vh-80px)] px-4 mt-16 md:mt-0">
           <div className="container mx-auto px-4 text-center relative z-10">
-            <h1 className="text-3xl md:text-7xl font-bold mb-4 md:mb-8 text-white animate-fade-in-down leading-tight">
+            <h1 className="text-2xl md:text-7xl font-bold mb-4 text-white animate-fade-in-down leading-tight">
               RAJ BHAWAN UTTARAKHAND
             </h1>
-            <h1 className="text-2xl md:text-6xl mb-4 md:mb-8 text-white animate-fade-in-down leading-tight">
+            <h1 className="text-xl md:text-6xl mb-4 text-white animate-fade-in-down leading-tight">
               SPRING FESTIVAL 2025
             </h1>
             <p className="text-lg md:text-xl mb-8 md:mb-16 text-gray-200 animate-fade-in-up max-w-3xl mx-auto">
@@ -348,7 +358,7 @@ export default function LandingPage() {
       <footer className="bg-gray-900 text-white py-8 md:py-12">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col space-y-8 md:space-y-0 md:flex-row md:justify-between md:items-center">
-            {/* Left: Government Logo and Name */}
+            {/* Left section */}
             <div className="flex items-center gap-3 brightness-0 invert justify-center md:justify-start">
               <div>
                 <Image src="/images/emblem_white.svg" alt="Government Logo" width={40} height={40} className="w-8 md:w-12" />
@@ -359,15 +369,15 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Center: Copyright and Additional Info */}
-            <div className="text-center">
+            {/* Center section */}
+            <div className="text-center order-3 md:order-2">
               <p className="text-sm md:text-base text-gray-400">&copy; 2025 All rights reserved.</p>
               <p className="text-sm md:text-base text-gray-400">Developed by Uttarakhand Technical University</p>
             </div>
 
-            {/* Right: Powered By Section */}
-            <div className="flex items-center gap-3 justify-center md:justify-end">
-              <div className="text-right">
+            {/* Right section */}
+            <div className="flex items-center gap-3 justify-center md:justify-end order-2 md:order-3">
+              <div className="text-center md:text-right">
                 <p className="text-xs md:text-sm text-gray-400">Powered by</p>
                 <div className="flex flex-col">
                   <p className="text-sm md:text-lg text-white font-semibold">Veer Madho Singh Bhandari</p>
@@ -379,7 +389,7 @@ export default function LandingPage() {
                 alt="Organization Logo"
                 width={60}
                 height={60}
-                className="w-12 md:w-20"
+                className="w-12 md:w-20 -mt-2 md:mt-0"
               />
             </div>
           </div>

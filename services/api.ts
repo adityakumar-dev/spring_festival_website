@@ -26,7 +26,8 @@ interface CreateAppUser {
 }
 // export interface CreateAppUser extends RegisterData{
 export const api = {
-
+  latest_visitor_card: "",
+  base: (card : string) => `${API_BASE_URL}/users/download-visitor-card/?card_path=${encodeURIComponent(card)}`,
   async createAppUser(data: CreateAppUser) {
     try {
       const formData = new FormData()
@@ -88,19 +89,6 @@ export const api = {
     }
   }
   ,
-  // async getInstitutionAdmins(institutionId: string) {
-  //   const response = await fetch(`${API_BASE_URL}/institution/${institutionId}/instructors`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //     },
-  //   },)
-  //   if (!response.ok) {
-  //     throw new Error('Failed to fetch Instructors')
-  //   }
-  //   return response.json()
-  // },
-
   async validateEmail(email: string) {
     const response = await fetch(`${API_BASE_URL}/users/check/email/${email}`, {
       method: 'POST',
@@ -200,47 +188,24 @@ export const api = {
         }
   
         let normalizedCardPath = result.visitor_card_path.replace(/\\/g, "/");
-  
+        this.latest_visitor_card = normalizedCardPath;
         // Construct the download URL
         const downloadUrl = `${API_BASE_URL}/users/download-visitor-card/?card_path=${encodeURIComponent(normalizedCardPath)}`;
   
         try {
-          console.log("Downloading visitor card from:", downloadUrl);
-  
-          const downloadResponse = await fetch(downloadUrl, { method: "GET", 
-            headers: {
-              // 'Accept': 'application/json',
-              'ngrok-skip-browser-warning': '69420',
-              'Bypass-Tunnel-Reminder': 'true',
-            },
-          });
-  
-          if (!downloadResponse.ok) {
-            console.error("Download failed:", downloadResponse.status);
-            alert("Failed to download visitor card");
-            return result;
-          }
-  
-          // Get Content-Type and convert response to a blob
-          const contentType = downloadResponse.headers.get("Content-Type");
-          console.log("Downloaded Content-Type:", contentType);
-  
-          const blob = await downloadResponse.blob();
-          console.log("Blob size:", blob.size);
-  
-          // Convert blob to an object URL
-          const imageUrl = URL.createObjectURL(blob);
-          console.log("Generated Blob URL:", imageUrl);
-  
-          // Debugging: Try opening the image in a new tab directly
-          window.open(imageUrl, "_blank");
-  
-          // Debugging: Try displaying in an image tag
-          const img = document.createElement("img");
-          img.src = imageUrl;
-          img.style.maxWidth = "100%";
-          document.body.appendChild(img);
-  
+          console.log("Initiating visitor card download from:", downloadUrl);
+          
+          // Create a temporary link element
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.target = '_blank'; // Optional: opens in new tab
+          
+          // Trigger the download
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          return result;
         } catch (downloadError) {
           console.error("Error downloading visitor card:", downloadError);
           alert("Error downloading visitor card");
