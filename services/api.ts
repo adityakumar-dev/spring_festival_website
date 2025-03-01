@@ -1,7 +1,7 @@
 import { Console } from "console";
 import { METHODS } from "http";
 
-export const API_BASE_URL = 'https://valid-uncommon-orca.ngrok-free.app'
+export const API_BASE_URL = 'https://api.vmsbutu.it.com'
 export const url = API_BASE_URL;
 export interface RegisterData {
   name: string
