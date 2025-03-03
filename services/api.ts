@@ -253,10 +253,10 @@ export const api = {
   
         return result;
       } else {
-        throw new Error(result.message || "Registration failed");
+        throw new Error(result.message || "Registration failed ! please switch to chrome browser");
       }
     } catch (error) {
-      alert("Registration failed");
+      alert("Registration failed ! please switch to chrome browser");
       console.error("Registration request failed:", error);
       throw error;
     }

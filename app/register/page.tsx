@@ -56,6 +56,8 @@ interface RegistrationResponse {
   unique_id: string;
 }
 
+
+
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
   const [institutions, setInstitutions] = useState<Institution[]>([]);
