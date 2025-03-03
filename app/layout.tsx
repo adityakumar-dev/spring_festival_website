@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { RouteLoadingOverlay } from '@/components/RouteLoadingOverlay'
 
 export const metadata: Metadata = {
   title: 'E-Management',
@@ -14,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <RouteLoadingOverlay />
+        {children}
+      </body>
     </html>
   )
 }

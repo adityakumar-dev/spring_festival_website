@@ -6,9 +6,12 @@ import { Users, ShieldCheck, Calendar, CheckCircle } from "lucide-react"
 import { HowItWorks } from "./landing/how-it-works"
 import { useState, useEffect } from "react"
 import { LoadingBar } from "@/components/loading-bar"
+import { GroupRegisterDialog } from '@/components/GroupRegisterDialog'
 
 export default function LandingPage() {
+  const [isLoading, setIsLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const images = [
     '/images/spring_festival/image1.jpg',
     '/images/spring_festival/image2.jpg',
@@ -18,6 +21,36 @@ export default function LandingPage() {
 
     // Add all your spring festival images here
   ];
+
+  useEffect(() => {
+    // Load all images
+    const loadImages = async () => {
+      const imagePromises = images.map((src) => {
+        return new Promise((resolve, reject) => {
+          const img = new window.Image();
+          img.src = src;
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+      });
+
+      try {
+        await Promise.all(imagePromises);
+        setImagesLoaded(true);
+      } catch (error) {
+        console.error('Error loading images:', error);
+      }
+    };
+
+    loadImages();
+  }, []);
+
+  useEffect(() => {
+    // Only set loading to false when images are loaded
+    if (imagesLoaded) {
+      setIsLoading(false);
+    }
+  }, [imagesLoaded]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,6 +73,18 @@ export default function LandingPage() {
   }
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isGroupDialogOpen, setIsGroupDialogOpen] = useState(false)
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-lg font-semibold text-gray-700">Loading Raj Bhawan...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
@@ -138,6 +183,15 @@ export default function LandingPage() {
               >
                 Admin Login <span className="ml-2">→</span>
               </Link>
+            </div>
+
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-4">
+              <button
+                onClick={() => setIsGroupDialogOpen(true)}
+                className="bg-yellow-600 text-white px-8 md:px-12 py-3 md:py-5 rounded-full text-lg md:text-xl hover:bg-blue-700 transition duration-300 w-full md:w-auto shadow-lg hover:shadow-xl"
+              >
+                Register Group/Institute <span className="ml-2">→</span>
+              </button>
             </div>
           </div>
         </div>
@@ -395,6 +449,11 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      <GroupRegisterDialog 
+        isOpen={isGroupDialogOpen}
+        onClose={() => setIsGroupDialogOpen(false)}
+      />
     </div>
   )
 }

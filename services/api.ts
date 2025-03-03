@@ -24,8 +24,48 @@ interface CreateAppUser {
   unique_id: string,
   profile_picture: File,
 }
+interface RegisterGroupData {
+  name: string;
+  address: string;
+  contact: string;
+  email: string;
+}
 // export interface CreateAppUser extends RegisterData{
 export const api = {
+
+
+  async registerGroup(data: RegisterGroupData) {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("address", data.address);
+    formData.append("contact", data.contact);
+    formData.append("email", data.email);
+    try{
+
+    
+    const response = await fetch(`${API_BASE_URL}/institutions/create`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    if (!response.ok) {
+      console.log(response.status)
+      // throw new Error('Failed to register group')
+      alert("Failed to register group")
+    }
+    else{
+      alert("Group registered successfully")
+      return true
+    }
+    }
+    catch(error){
+      console.error('Error in registerGroup:', error)
+      alert("Failed to register group")
+      return false
+    }
+  },
   latest_visitor_card: "",
   base: (card : string) => `${API_BASE_URL}/users/download-visitor-card/?card_path=${encodeURIComponent(card)}`,
   async createAppUser(data: CreateAppUser) {
