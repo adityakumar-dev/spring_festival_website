@@ -225,6 +225,10 @@ export default function RegisterPage() {
                   />
                 </div>
               </div>
+            <div className="flex items-center justify-center">
+              <h2 className="text-xl sm:text-sm font-semibold mb-4 sm:mb-6">If your registration failed please switch to chrome browser or device and try again</h2>
+            </div>
+           
             </div>
           </div>
         );
@@ -308,6 +312,9 @@ export default function RegisterPage() {
                   </div>
                 </>
               )}
+                <div className="flex items-center justify-center">
+              <h2 className="text-xl sm:text-sm font-semibold ">If your registration failed please switch to chrome browser or device and try again</h2>
+            </div>
             </div>
           </div>
         );
@@ -356,6 +363,9 @@ export default function RegisterPage() {
               </Link>
             </div>
             )}
+            <div className="flex items-center justify-center">
+              <h2 className="text-xl sm:text-sm font-semibold ">If your registration failed please switch to chrome browser or device and try again</h2>
+            </div>
           </div>
         );
 
