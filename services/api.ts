@@ -43,7 +43,7 @@ export const api = {
     try{
 
     
-    const response = await fetch(`${API_BASE_URL}/institutions/create`, {
+    const response = await fetch(`${API_BASE_URL}/institutions`, {
       method: "POST",
       body: formData,
       headers: {
