@@ -1,5 +1,6 @@
 import { Console } from "console";
 import { METHODS } from "http";
+import { useState } from "react";
 
 export const API_BASE_URL = 'https://api.vmsbutu.it.com'
 export const url = API_BASE_URL;
@@ -10,6 +11,7 @@ export interface RegisterData {
   institutionName?: string
   institution_id?: string
   instructor_id?: string
+  groupSize?: number
   photo: File
   unique_id_type: string  // This should be one of: "aadhar", "pan", "driving_license", "passport", "voter_id"
   unique_id: string
@@ -26,9 +28,8 @@ interface CreateAppUser {
 }
 interface RegisterGroupData {
   name: string;
-  address: string;
-  contact: string;
-  email: string;
+
+  group_size: number;
 }
 // export interface CreateAppUser extends RegisterData{
 export const api = {
@@ -37,9 +38,7 @@ export const api = {
   async registerGroup(data: RegisterGroupData) {
     const formData = new FormData();
     formData.append("name", data.name);
-    formData.append("address", data.address);
-    formData.append("contact", data.contact);
-    formData.append("email", data.email);
+    formData.append("count", data.group_size.toString());
     try{
 
     
@@ -54,10 +53,11 @@ export const api = {
       console.log(response.status)
       // throw new Error('Failed to register group')
       alert("Failed to register group")
+      return false
     }
     else{
       alert("Group registered successfully")
-      return true
+      return response.json()
     }
     }
     catch(error){
@@ -190,7 +190,7 @@ export const api = {
     formData.append("unique_id", data.unique_id);
     formData.append("is_quick_register", "false");
   
-    if (data.institution_id && data.institution_id.trim() !== "") {
+    if (data.institution_id ) {
       formData.append("institution_id", data.institution_id);
     }
   

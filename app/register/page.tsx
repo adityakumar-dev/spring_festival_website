@@ -56,8 +56,6 @@ interface RegistrationResponse {
   unique_id: string;
 }
 
-
-
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
   const [institutions, setInstitutions] = useState<Institution[]>([]);
@@ -71,6 +69,7 @@ export default function RegisterPage() {
     lastName: "",
     email: "",
     id_type: "",
+      groupSize: "",
     idType: "aadhar",
     userType: "individual", // "individual", "institution_admin", "institution_student"
     institutionName: "",
@@ -84,6 +83,7 @@ export default function RegisterPage() {
   // const [instructor, setInstructor] = useState<Instructor[]>([]);
   const [institution, setInstitution] = useState<Institution[]>([]);
   const [registrationData, setRegistrationData] = useState<RegistrationResponse | null>(null);
+  const [groupSize, setGroupSize] = useState<number | "">(""); // Number of people in the group
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -110,16 +110,18 @@ export default function RegisterPage() {
       const registerData: RegisterData = {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
-        userType: formData.userType as "individual" | "instructor" | "student",
+        userType: formData.userType as "individual" | "instructor" ,
         photo: formData.photo,
         unique_id_type: formData.idType,
         unique_id: formData.id_type,
-        institution_id: formData.institutionId,
-      };
+        institution_id: formData.institutionId || undefined,
+        institutionName: formData.institutionName,
+        groupSize: groupSize !== "" ? groupSize : undefined,
 
+      };
       console.log('Submitting data:', registerData);
 
-     await api.register(registerData);
+      await api.register(registerData);
     
     } catch (error) {
       console.error("Registration failed:", error);
@@ -252,69 +254,47 @@ export default function RegisterPage() {
                   {formData.userType === "individual"
                     ? "Individual"
                     : formData.userType === "instructor"
-                    ? "Instructor"
-                    : formData.userType === "student"
-                    ? "Student"
+                    ? "Group Leader"
+                   
                     : "Select user type"}
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="individual">Individual</SelectItem>
                   <SelectItem value="instructor">Group Leader</SelectItem>
-                  <SelectItem value="student">Student</SelectItem>
                 </SelectContent>
               </Select>
 
-              {(formData.userType === "student" ||
-                formData.userType == "instructor") && (
+              {(
+                formData.userType === "instructor") && (
                 <>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">
-                      Select Institution
+                      Institution/Organization Name
                     </label>
-                    <Select
-                      value={formData.institutionId || ""}
-                      onValueChange={(value) => {
-                        // console.log("Selected value:", value);
-
-                        const selectedInst = institutions.find(
-                          (inst) => inst.institution_id.toString() === value
-                        );
-                        // console.log("Found institution:", selectedInst);
-                        if (selectedInst) {
-                          setSelectedInstitution(value);
-                          setFormData((prev) => ({
-                            ...prev,
-                            institutionId: value,
-                            institutionName: selectedInst.name,
-                          }));
-                          console.log(
-                            formData.institutionId +
-                              " " +
-                              formData.institutionName
-                          );
-                        }
-                      }}
-                    >
-                      <SelectTrigger className="w-full">
-                        {formData.institutionName || "Select an institution"}
-                      </SelectTrigger>
-                      <SelectContent>
-                        {institutions.map((institution) => (
-                          <SelectItem
-                            key={institution.institution_id.toString()}
-                            value={institution.institution_id.toString()}
-                          >
-                            {institution.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <input
+                      type="text"
+                      value={formData.institutionName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, institutionName: e.target.value })
+                      }
+                      className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
+                      placeholder="Enter institution name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      Number of People in Group
+                    </label>
+                    <input
+                      type="number"
+                      value={groupSize}
+                      onChange={(e) => setGroupSize(Number(e.target.value))}
+                      className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
+                      placeholder="Enter number of people"
+                    />
                   </div>
                 </>
               )}
-                <div className="flex items-center justify-center">
-              <h2 className="text-xl sm:text-sm font-semibold ">If your registration failed please switch to chrome browser or device and try again</h2>
-            </div>
             </div>
           </div>
         );
@@ -427,104 +407,52 @@ export default function RegisterPage() {
             {step < 3 ? (
               <button
                 onClick={async () => {
-                 if (step == 1) {
-                    try {
-                      setIsLoading(true);
-                  
-                  if(formData.idType == ""){
-                    alert("Please select an ID type");
-                    return;
-                  }
-                  if(formData.idType == "aadhar"){
-                    if(formData.id_type.length != 12){
-                      alert("Please enter a valid 12-digit Aadhar number");
-                      return;
-                    }
-                  }
-                  if(formData.idType == "pan"){
-                    if(formData.id_type.length != 10){
-                      alert("Please enter a valid 10-digit PAN number");
-                      return;
-                    }
-                  }
-                  if(formData.idType == "driving_license"){
-                    if(formData.id_type.length != 15){
-                      alert("Please enter a valid 15-digit Driving License number");
-                      return;
-                    }
-                  }
-                  if(formData.idType == "passport"){
-                    if(formData.id_type.length != 8){
-                      alert("Please enter a valid 8-digit Passport number");
-                      return;
-                    }
-                  }
-                  if(formData.idType == "voter_id"){
-                    if(formData.id_type.length != 10){
-                      alert("Please enter a valid 10-digit Voter ID number");
-                      return;
-                    }
-                  }
-      const emailResponse = await api.validateEmail(
-                          formData.email
-                        );
-                        //  alert(emailResponse)
-                        if (emailResponse["exists"] === false) {
-                          console.log("Email done");
-                          try {
-                            console.log("Fetching institutions");
-                            const response = await api.getInstitutions();
-                            // const institutionsData = await response.json();
-
-                            console.log('Institution data:', response[0]);
-                            const institutionData = response.map((inst: any) => ({
-                              institution_id: inst.institution_id,
-                              name: inst.name,
-                              created_at: inst.created_at,
-                            }));
-                            setInstitutions(institutionData);
-                          
-                          } catch (error) {
-                            console.error('Error fetching institutions:', error);
-                            alert('Failed to fetch institutions. Please try again.');
-                          }
-                          setStep(step + 1);
-                        } else {
-                          alert(
-                            "This email is already registered. Please use a different email."
-                          );
-                        }
+                  if (step === 2) {
+                    setIsSubmitting(true);
+                    if (formData.userType === "instructor") {
+                      if (!formData.institutionName) {
+                        alert("Please enter the institution name");
+                        return;
+                      }
+                      if (Number(groupSize) <= 0) {
+                        alert("Please enter a valid number of people in the group");
+                        return;
+                      }
                       
-                    } catch (error) {
-                      console.error("Error validating :", error);
-                      alert("Error : " + error);
-                    } finally {
-                      setIsLoading(false);
+                      alert("Registering group with : " + formData.institutionName + " and " + groupSize + " people");
+                      // Register the group first
+                      const response = await api.registerGroup({
+                        name: formData.institutionName,
+                        group_size: Number(groupSize),
+                      });
+                      try{
+                        console.log(response);
+                        const id = response.institution.id;
+                        setFormData({ ...formData, institutionId: id });
+                        if(id){
+                          setStep(step + 1);
+                        }
+                        setIsSubmitting(false);
+                      if (!response) {
+                        alert("Failed to register group");
+                        return;
+                      }
+                      }catch(error){
+                        console.error("Registration failed:", error);
+                        alert(error instanceof Error ? error.message : "Registration failed");
+                      }
                     }
-                    return;
-                  } else if (
-                    step == 2 &&
-                    (formData.userType == "student" || formData.userType == "instructor") &&
-                    formData.institutionId == "" &&
-                    formData.institutionName == ""
-                  ) {
-                    alert("Please Choose an institution");
-                    return;
-                  } else {
-                    console.log(formData.institutionId);
-
-                    setStep(step + 1);
                   }
+
+                  // Proceed to the next step
+                  setStep(step + 1);
                 }}
-                // disabled={isValidatingAadhar}
-                className="ml-auto flex items-center bg-yellow-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-yellow-700 disabled:bg-yellow-400 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="ml-auto flex items-center bg-yellow-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-yellow-700"
               >
-                 
-                  <>
-                    Next
-                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
-                  </>
-                
+                <>
+                  Next
+                  <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
+                </>
               </button>
             ) : null}
           </div>
