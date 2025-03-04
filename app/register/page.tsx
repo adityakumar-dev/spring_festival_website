@@ -305,6 +305,11 @@ export default function RegisterPage() {
             <h2 className="text-2xl font-semibold mb-6">
               Upload Your Image
             </h2>
+            <div>
+              <p>
+               NOTE : "Please upload valid and latest profile picture"
+              </p>
+            </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
@@ -407,8 +412,9 @@ export default function RegisterPage() {
             {step < 3 ? (
               <button
                 onClick={async () => {
-setIsLoading(true);
                   if(step === 1){
+                    setIsLoading(true);
+
                     if(formData.email == ""){
                       alert("Please enter your email");
                       setIsLoading(false);
@@ -438,8 +444,9 @@ setIsLoading(true);
                     
                   }
                   else if (step === 2) {
-                    setIsLoading(true);
                     if (formData.userType === "instructor") {
+                      setIsLoading(true);
+                  
                       if (!formData.institutionName) {
                         alert("Please enter the institution name");
                         setIsLoading(false);
@@ -473,6 +480,7 @@ setIsLoading(true);
                         console.error("Registration failed:", error);
                         alert(error instanceof Error ? error.message : "Registration failed");
                       }
+                      setIsLoading(false);
                     }
                   }
 

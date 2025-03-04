@@ -144,16 +144,21 @@ export default function AdminPage() {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Personal Information</h2>
+            <div>
+              <p>
+                NOTE : "Please don't use capital letter and space on username and password"
+              </p>
+            </div>
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Full Name</label>
+                <label className="text-sm font-medium text-gray-700">username</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
-                  placeholder="Enter your full name"
+                  placeholder="Enter your username"
                   required
                 />
               </div>

@@ -185,14 +185,14 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-4">
+            {/* <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-4">
               <button
                 onClick={() => setIsGroupDialogOpen(true)}
                 className="bg-yellow-600 text-white px-8 md:px-12 py-3 md:py-5 rounded-full text-lg md:text-xl hover:bg-blue-700 transition duration-300 w-full md:w-auto shadow-lg hover:shadow-xl"
               >
                 Register Group/Institute <span className="ml-2">→</span>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </header>
@@ -220,9 +220,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Register</h3>
               <p className="text-gray-700 mb-4">Create your account and complete your profile with necessary details for Rajbhawan services</p>
-              <button className="text-gray-600 hover:text-gray-700 font-medium">
-                Read More →
-              </button>
+             
             </div>
 
             {/* Response Card */}
@@ -234,9 +232,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Response</h3>
               <p className="text-gray-700 mb-4">Successfully Reigstered with qr code and email response</p>
-              <button className="text-gray-600 hover:text-gray-700 font-medium">
-                Read More →
-              </button>
+              
             </div>
 
             {/* Verify Card */}
@@ -248,9 +244,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Verify</h3>
               <p className="text-gray-700 mb-4">Scan qr and complete facial recognition along with adhar card </p>
-              <button className="text-gray-600 hover:text-gray-700 font-medium">
-                Read More →
-              </button>
+             
             </div>
 
             {/* Attend Card */}
@@ -262,9 +256,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Attend</h3>
               <p className="text-gray-700 mb-4">Enjoy seamless entry and exit with our advanced security system</p>
-              <button className="text-gray-600 hover:text-gray-700 font-medium">
-                Read More →
-              </button>
+             
             </div>
 
           </div>
