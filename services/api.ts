@@ -136,11 +136,13 @@ export const api = {
         'Accept': 'application/json',
       },
     })
+    console.log(response);
     if (!response.ok) {
       console.log(response.status)
       throw new Error(`Failed to validate email`)
+    }else{
+      return response.json()
     }
-    return response.json()
   },
   // Get all institutions
   async getInstitutions() {

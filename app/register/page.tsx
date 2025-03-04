@@ -269,7 +269,7 @@ export default function RegisterPage() {
                 <>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">
-                      Institution/Organization Name
+                      Institution /Organization Name
                     </label>
                     <input
                       type="text"
@@ -407,15 +407,47 @@ export default function RegisterPage() {
             {step < 3 ? (
               <button
                 onClick={async () => {
-                  if (step === 2) {
-                    setIsSubmitting(true);
+setIsLoading(true);
+                  if(step === 1){
+                    if(formData.email == ""){
+                      alert("Please enter your email");
+                      setIsLoading(false);
+                      return;
+                    }
+                    if(formData.id_type == ""){
+                      alert("Please enter your id number");
+                      setIsLoading(false);
+                      return;
+                    }
+                    if(formData.firstName == ""){
+                      alert("Please enter your first name");
+                      setIsLoading(false);
+                      return;
+                    }
+                   var res = await api.validateEmail(formData.email);
+                   console.log(res);
+                   if(!res['exists']){
+                    // setFormData({ ...formData, email: res.email });
+                    setIsLoading(false);
+                    setStep(step + 1);
+                   }else{
+                    alert("Please enter a valid email");
+                    setIsLoading(false);
+                    return;
+                   }
+                    
+                  }
+                  else if (step === 2) {
+                    setIsLoading(true);
                     if (formData.userType === "instructor") {
                       if (!formData.institutionName) {
                         alert("Please enter the institution name");
+                        setIsLoading(false);
                         return;
                       }
                       if (Number(groupSize) <= 0) {
                         alert("Please enter a valid number of people in the group");
+                        setIsLoading(false);
                         return;
                       }
                       
@@ -432,7 +464,7 @@ export default function RegisterPage() {
                         if(id){
                           setStep(step + 1);
                         }
-                        setIsSubmitting(false);
+                        setIsLoading(false);
                       if (!response) {
                         alert("Failed to register group");
                         return;
