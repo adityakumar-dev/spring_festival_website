@@ -24,6 +24,7 @@ import {
 import { api, RegisterData, url } from "@/services/api";
 import { Spinner } from "@/components/ui/spinner";
 import router, { useRouter } from "next/router";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 interface Institution {
   institution_id: number;
@@ -69,7 +70,7 @@ export default function RegisterPage() {
     lastName: "",
     email: "",
     id_type: "",
-      groupSize: "",
+    groupSize: "",
     idType: "aadhar",
     userType: "individual", // "individual", "institution_admin", "institution_student"
     institutionName: "",
@@ -78,9 +79,9 @@ export default function RegisterPage() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  // const [isValidatingAadhar, setIsValidatingAadhar] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const [instructor, setInstructor] = useState<Instructor[]>([]);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [isLoadingOverlayOpen, setIsLoadingOverlayOpen] = useState(false);
   const [institution, setInstitution] = useState<Institution[]>([]);
   const [registrationData, setRegistrationData] = useState<RegistrationResponse | null>(null);
   const [groupSize, setGroupSize] = useState<number | "">(""); // Number of people in the group
@@ -96,149 +97,211 @@ export default function RegisterPage() {
       setFormData({ ...formData, photo: e.target.files[0] });
     }
   };
-  useEffect(() => {
-    console.log(formData.institutionName);
-  }, [formData]);
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    try {
+
+
+      // Ensure photo is not null before proceeding
       if (!formData.photo) {
-        alert("Please select a profile photo");
+        alert("Please upload a valid profile photo.");
+        setIsSubmitting(false);
+        setIsLoadingOverlayOpen(false);
         return;
       }
+      if(formData.idType == ""){
+        alert("Please select a valid id type");
+        setIsSubmitting(false);
+        setIsLoadingOverlayOpen(false);
+        return;
+      }
+      if(formData.id_type == ""){
+        alert("Please enter a valid id number");
+        setIsSubmitting(false);
+        setIsLoadingOverlayOpen(false);
+        return;
+      }
+      if(formData.firstName == ""){
+        alert("Please enter a valid first name");
+          setIsSubmitting(false);
+        setIsLoadingOverlayOpen(false);
+        return;
+      }
+      if(formData.email == ""){
+        alert("Please enter a valid email");
+        setIsSubmitting(false);
+        setIsLoadingOverlayOpen(false);
+        return;
+      }
+      
+      
+      setIsLoadingOverlayOpen(true);
+    setLoadingMessage("Checking email...");
+    try {
+      // Check email
+      // let registerData = {};
 
-      const registerData: RegisterData = {
+      const emailResponse = await api.validateEmail(formData.email);
+      if (emailResponse["exists"]) {
+        alert("This email is already registered. Please use a different email.");
+        return;
+      }
+      if(formData.userType === "instructor"){
+      setLoadingMessage("Registering institution...");
+      const groupResponse = await api.registerGroup({
+        name: formData.institutionName,
+        group_size: Number(formData.groupSize),
+      });
+      // registerData.institution_id = groupResponse.institution.id;
+      if (!groupResponse) {
+        alert("Failed to register group");
+        return;
+      }
+      setLoadingMessage("Registering user...");
+      const registerData = {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
-        userType: formData.userType as "individual" | "instructor" ,
+        userType: formData.userType as "individual" | "instructor",
         photo: formData.photo,
         unique_id_type: formData.idType,
         unique_id: formData.id_type,
-        institution_id: formData.institutionId || undefined,
+        institution_id: groupResponse.institution.id,
         institutionName: formData.institutionName,
         groupSize: groupSize !== "" ? groupSize : undefined,
-
       };
-      console.log('Submitting data:', registerData);
+     await api.register(registerData);
+      alert("Registration successful!");
+    }
 
-      await api.register(registerData);
-    
+   
+      if(formData.userType === "individual"){
+        // Proceed to register user
+        setLoadingMessage("Registering user...");
+      const registerData = {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        userType: formData.userType as "individual" | "instructor",
+        photo: formData.photo,
+        unique_id_type: formData.idType,
+        unique_id: formData.id_type,
+        institutionName: formData.institutionName,
+        groupSize: groupSize !== "" ? groupSize : undefined,
+      };
+     await api.register(registerData);
+      alert("Registration successful!");
+    }
+     
+
     } catch (error) {
       console.error("Registration failed:", error);
       alert(error instanceof Error ? error.message : "Registration failed");
     } finally {
       setIsSubmitting(false);
+      setIsLoadingOverlayOpen(false);
     }
+    setIsLoading(false);
+    setIsSubmitting(false);
+    setIsLoadingOverlayOpen(false);
   };
 
   const renderStep = () => {
     if (isLoading) {
       return <Spinner />;
     }
-    switch (step) {
-      case 1:
-        return (
-          <div className="space-y-4 sm:space-y-6">
-            <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Basic Information</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  First Name
-                </label>
+
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex items-center justify-center">
+          <h1 className="text-2xl font-bold">Spring Festival 2025 Registration Form</h1>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+              First Name
+            </label>
+            <input
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
+              placeholder="Enter first name"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+              Last Name
+            </label>
+            <input
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
+              placeholder="Enter last name"
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
+            placeholder="Enter email"
+          />
+        </div>
+        <div className="space-y-4">
+          <label className="text-sm font-medium text-gray-700">
+            ID Type
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
+            {["aadhar", "pan", "driving_license", "passport", "voter_id"].map((type) => (
+              <div
+                key={type}
+                className={`flex items-center justify-center p-3 rounded-lg cursor-pointer transition-all ${
+                  formData.idType === type
+                    ? "bg-yellow-100 border-2 border-yellow-600"
+                    : "bg-gray-50 border-2 border-transparent hover:bg-yellow-50"
+                }`}
+                onClick={() => setFormData({ ...formData, idType: type, id_type: "" })}
+              >
                 <input
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
-                  placeholder="Enter first name"
+                  type="radio"
+                  className="hidden"
+                  name="idType"
+                  value={type}
+                  checked={formData.idType === type}
+                  onChange={() => {}}
                 />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Last Name
+                <label className="cursor-pointer capitalize">
+                  {type.replace("_", " ")}
                 </label>
-                <input
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
-                  placeholder="Enter last name"
-                />
               </div>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Email</label>
+            ))}
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+              {formData.idType.replace("_", " ").charAt(0).toUpperCase() + 
+               formData.idType.replace("_", " ").slice(1)} Number
+            </label>
+            <div className="relative">
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                name="id_type"
+                value={formData.id_type}
+                maxLength={
+                  formData.idType === "aadhar" ? 12 :
+                  formData.idType === "pan" ? 10 :
+                  formData.idType === "passport" ? 8 :
+                  formData.idType === "voter_id" ? 10 : 15
+                }
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
-                placeholder="Enter email"
+                placeholder={`Enter ${formData.idType.replace("_", " ")} number`}
               />
             </div>
-            <div className="space-y-4">
-              <label className="text-sm font-medium text-gray-700">
-                ID Type
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
-                {["aadhar", "pan", "driving_license", "passport", "voter_id"].map((type) => (
-                  <div
-                    key={type}
-                    className={`flex items-center justify-center p-3 rounded-lg cursor-pointer transition-all ${
-                      formData.idType === type
-                        ? "bg-yellow-100 border-2 border-yellow-600"
-                        : "bg-gray-50 border-2 border-transparent hover:bg-yellow-50"
-                    }`}
-                    onClick={() => setFormData({ ...formData, idType: type, id_type: "" })}
-                  >
-                    <input
-                      type="radio"
-                      className="hidden"
-                      name="idType"
-                      value={type}
-                      checked={formData.idType === type}
-                      onChange={() => {}}
-                    />
-                    <label className="cursor-pointer capitalize">
-                      {type.replace("_", " ")}
-                    </label>
-                  </div>
-                ))}
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  {formData.idType.replace("_", " ").charAt(0).toUpperCase() + 
-                   formData.idType.replace("_", " ").slice(1)} Number
-                </label>
-                <div className="relative">
-                  <input
-                    name="id_type"
-                    value={formData.id_type}
-                    maxLength={
-                      formData.idType === "aadhar" ? 12 :
-                      formData.idType === "pan" ? 10 :
-                      formData.idType === "passport" ? 8 :
-                      formData.idType === "voter_id" ? 10 : 15
-                    }
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
-                    placeholder={`Enter ${formData.idType.replace("_", " ")} number`}
-                  />
-                </div>
-              </div>
-            <div className="flex items-center justify-center">
-              <h2 className="text-xl sm:text-sm font-semibold mb-4 sm:mb-6">If your registration failed please switch to chrome browser or device and try again</h2>
-            </div>
-           
-            </div>
           </div>
-        );
-
-      case 2:
-        return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold mb-6">User Type</h2>
             <div className="space-y-4">
               <label className="text-sm font-medium text-gray-700">
                 Select User Type
@@ -297,20 +360,7 @@ export default function RegisterPage() {
               )}
             </div>
           </div>
-        );
-
-      case 3:
-        return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold mb-6">
-              Upload Your Image
-            </h2>
-            <div>
-              <p>
-               NOTE : "Please upload valid and latest profile picture"
-              </p>
-            </div>
-
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
                 Profile Photo
@@ -323,10 +373,19 @@ export default function RegisterPage() {
                 className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
               />
             </div>
+            <div>
+              <p>
+               NOTE : "Please upload valid and latest profile picture"
+              </p>
+            </div>
+            
+        <div className="flex items-center justify-center">
+          <h2 className="text-xl sm:text-sm font-semibold ">If your registration failed please switch to chrome browser or device and try again</h2>
+        </div>
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="w-full bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors disabled:bg-yellow-400 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-yellow-600 text-white px-6 py-3 rounde-lg hover:bg-yellow-700 transition-colors disabled:bg-yellow-400 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isSubmitting ? (
                 <>
@@ -348,21 +407,16 @@ export default function RegisterPage() {
               </Link>
             </div>
             )}
-            <div className="flex items-center justify-center">
-              <h2 className="text-xl sm:text-sm font-semibold ">If your registration failed please switch to chrome browser or device and try again</h2>
-            </div>
+
           </div>
-        );
-
-     
-
-      default:
-        return null;
-    }
+        </div>
+      </div>
+    );
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-6 sm:py-12">
+      <LoadingOverlay isOpen={isLoadingOverlayOpen} message={loadingMessage} />
       <div className="container mx-auto px-4 sm:px-6">
         <Link
           href="/"
@@ -373,33 +427,9 @@ export default function RegisterPage() {
         </Link>
 
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-4 sm:p-8">
-          <div className="mb-6 sm:mb-8">
-            <div className="flex justify-between mb-4">
-              {[1, 2, 3].map((stepNumber) => (
-                <div
-                  key={stepNumber}
-                  className={`flex-1 h-2 rounded-full mx-2 ${
-                    stepNumber <= step ? "bg-yellow-600" : "bg-gray-200"
-                  }`}
-                />
-              ))}
-            </div>
-            <div className="flex justify-between text-xs sm:text-sm">
-              <span className={step >= 1 ? "text-yellow-600" : "text-gray-400"}>
-                Basic Info
-              </span>
-              <span className={step >= 2 ? "text-yellow-600" : "text-gray-400"}>
-                User Type
-              </span>
-              <span className={step >= 3 ? "text-yellow-600" : "text-gray-400"}>
-                Complete Registration
-              </span>
-            </div>
-          </div>
-
           {renderStep()}
 
-          <div className="flex justify-between mt-6 sm:mt-8">
+          {/* <div className="flex justify-between mt-6 sm:mt-8">
             {step > 1 && (
               <button
                 onClick={() => setStep(step - 1)}
@@ -409,68 +439,68 @@ export default function RegisterPage() {
                 Previous
               </button>
             )}
-            {step < 3 ? (
-              <button
-                onClick={async () => {
-                  if(step === 1){
-                    setIsLoading(true);
-
-                    if(formData.email == ""){
-                      alert("Please enter your email");
-                      setIsLoading(false);
-                      return;
-                    }
-                    if(formData.id_type == ""){
-                      alert("Please enter your id number");
-                      setIsLoading(false);
-                      return;
-                    }
-                    if(formData.firstName == ""){
-                      alert("Please enter your first name");
-                      setIsLoading(false);
-                      return;
-                    }
-                   var res = await api.validateEmail(formData.email);
-                   console.log(res);
-                   if(!res['exists']){
-                    // setFormData({ ...formData, email: res.email });
-                    setIsLoading(false);
-                    setStep(step + 1);
-                   }else{
-                    alert("Please enter a valid email");
-                    setIsLoading(false);
-                    return;
-                   }
-                    
-                  }
-                  else if (step === 2) {
-                    if (formData.userType === "instructor") {
+              {step < 3 ? (
+                <button
+                  onClick={async () => {
+                    if(step === 1){
                       setIsLoading(true);
-                  
-                      if (!formData.institutionName) {
-                        alert("Please enter the institution name");
+
+                      if(formData.email == ""){
+                        alert("Please enter your email");
                         setIsLoading(false);
                         return;
                       }
-                      if (Number(groupSize) <= 0) {
-                        alert("Please enter a valid number of people in the group");
+                      if(formData.id_type == ""){
+                        alert("Please enter your id number");
                         setIsLoading(false);
                         return;
                       }
+                      if(formData.firstName == ""){
+                        alert("Please enter your first name");
+                        setIsLoading(false);
+                        return;
+                      }
+                    var res = await api.validateEmail(formData.email);
+                    console.log(res);
+                    if(!res['exists']){
+                      // setFormData({ ...formData, email: res.email });
+                      setIsLoading(false);
+                      setStep(step + 1);
+                    }else{
+                      alert("Please enter a valid email");
+                      setIsLoading(false);
+                      return;
+                    }
                       
-                      alert("Registering group with : " + formData.institutionName + " and " + groupSize + " people");
-                      // Register the group first
-                      const response = await api.registerGroup({
-                        name: formData.institutionName,
-                        group_size: Number(groupSize),
-                      });
-                      try{
-                        console.log(response);
-                        const id = response.institution.id;
-                        setFormData({ ...formData, institutionId: id });
-                        if(id){
-                          setStep(step + 1);
+                    }
+                    else if (step === 2) {
+                      if (formData.userType === "instructor") {
+                        setIsLoading(true);
+                    
+                        if (!formData.institutionName) {
+                          alert("Please enter the institution name");
+                          setIsLoading(false);
+                          return;
                         }
+                        if (Number(groupSize) <= 0) {
+                          alert("Please enter a valid number of people in the group");
+                          setIsLoading(false);
+                          return;
+                        }
+                        
+                        alert("Registering group with : " + formData.institutionName + " and " + groupSize + " people");
+                        // Register the group first
+                        const response = await api.registerGroup({
+                          name: formData.institutionName,
+                          group_size: Number(groupSize),
+                        });
+                        try{
+                          console.log(response);
+                          const id = response.institution.id;
+                          setFormData({ ...formData, institutionId: id });
+                          if(id){
+                            setStep(step + 1);
+                          }
                         setIsLoading(false);
                       if (!response) {
                         alert("Failed to register group");
@@ -485,7 +515,7 @@ export default function RegisterPage() {
                   }
 
                   // Proceed to the next step
-                  setStep(step + 1);
+                  // setStep(step + 1);
                 }}
                 className="ml-auto flex items-center bg-yellow-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-yellow-700"
               >
@@ -495,7 +525,7 @@ export default function RegisterPage() {
                 </>
               </button>
             ) : null}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
