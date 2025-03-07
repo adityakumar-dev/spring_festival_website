@@ -1,7 +1,7 @@
 import { Console } from "console";
 import { METHODS } from "http";
 import { useState } from "react";
-
+import axios from 'axios';
 export const API_BASE_URL = 'https://api.vmsbutu.it.com'
 export const url = API_BASE_URL;
 export interface RegisterData {
@@ -88,6 +88,7 @@ export const api = {
         body: formData,
         headers: {
           'Accept': 'application/json',
+      
         }
       })
 
@@ -149,7 +150,7 @@ export const api = {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-        
+       
       },
     })
     console.log(response);
@@ -196,28 +197,10 @@ export const api = {
   
     try {
       console.log("Sending registration request to:", `${API_BASE_URL}/users/create/`);
+      const response = await axios.post(`${API_BASE_URL}/users/create/`, formData);
   
-      const response = await fetch(`${API_BASE_URL}/users/create/`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          Accept: "application/json",
-        
-        },
-      });
-      console.log('Response status:', response.status)
-      const responseText = await response.text();
-
-      console.log('Response body:', responseText)
-      console.log("Respnse json : ", JSON.parse(responseText))
-      let result;
-  
-      try {
-        result = JSON.parse(responseText);
-      } catch (jsonError) {
-        console.error("Error parsing JSON response:", responseText);
-        throw new Error("Invalid response from server");
-      }
+      // Directly use response.data since Axios automatically parses JSON responses
+      const result = response.data;
   
       console.log("Registration response:", result);
   
@@ -255,10 +238,10 @@ export const api = {
   
         return result;
       } else {
-        throw new Error(result.message || "Registration failed ! please switch to chrome browser");
+        throw new Error(result.message || "Registration failed! Please switch to Chrome browser.");
       }
     } catch (error) {
-      alert("Registration failed ! please switch to chrome browser");
+      alert("Registration failed! Please switch to Chrome browser.");
       console.error("Registration request failed:", error);
       throw error;
     }
