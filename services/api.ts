@@ -2,6 +2,7 @@ import { Console } from "console";
 import { METHODS } from "http";
 import { useState } from "react";
 import axios from 'axios';
+import { redirect } from "next/dist/server/api-utils";
 export const API_BASE_URL = 'https://api.vmsbutu.it.com'
 export const url = API_BASE_URL;
 export interface RegisterData {
@@ -197,64 +198,51 @@ export const api = {
   
     try {
       console.log("Sending registration request to:", `${API_BASE_URL}/users/create/`);
-      const response = await axios.post(`${API_BASE_URL}/users/create/`, formData, {
-        timeout: 20000, maxRedirects : 10});
-  
-      const result = response.data;
-  
+      const response = await fetch(`${API_BASE_URL}/users/create/`, {
+        method: 'POST',
+        body: formData,
+      
+        headers: {
+          'Accept': 'application/json',
+        },
+      redirect : "follow", },);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || `Registration failed with status ${response.status}`);
+      }
+
+      const result = await response.json();
       console.log("Registration response:", result);
-  
-      if (response.status === 200) {
-        alert("Registration successful");
-  
-        if (!result.visitor_card_path) {
-          console.error("No visitor_card_path found in response.");
-          return result;
-        }
-  
-        let normalizedCardPath = result.visitor_card_path.replace(/\\/g, "/");
-        this.latest_visitor_card = normalizedCardPath;
-        // Construct the download URL
-        const downloadUrl = `${API_BASE_URL}/users/download-visitor-card/?card_path=${encodeURIComponent(normalizedCardPath)}`;
-  
-        try {
-          console.log("Initiating visitor card download from:", downloadUrl);
-          
-          // Create a temporary link element
-          const link = document.createElement('a');
-          link.href = downloadUrl;
-          link.target = '_blank'; // Optional: opens in new tab
-          
-          // Trigger the download
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          return result;
-        } catch (downloadError) {
-          console.error("Error downloading visitor card:", downloadError);
-          alert("Error downloading visitor card");
-        }
-  
+      
+      alert("Registration successful");
+
+      if (!result.visitor_card_path) {
+        console.error("No visitor_card_path found in response.");
         return result;
-      } else {
-        throw new Error(result.message || "Registration failed! Please switch to Chrome browser.");
       }
+
+      let normalizedCardPath = result.visitor_card_path.replace(/\\/g, "/");
+      this.latest_visitor_card = normalizedCardPath;
+      const downloadUrl = `${API_BASE_URL}/users/download-visitor-card/?card_path=${encodeURIComponent(normalizedCardPath)}`;
+
+      try {
+        console.log("Initiating visitor card download from:", downloadUrl);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (downloadError) {
+        console.error("Error downloading visitor card:", downloadError);
+        alert("Error downloading visitor card. You can try downloading it later.");
+      }
+
+      return result;
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Axios error:", error.message);
-        if (error.response) {
-          // alert(error.response.data.message)
-          console.error("Error response:", error.response.data);
-        } else {
-          // alert(error.request)
-          console.error("Error request:", error.request);
-        }
-      } else {
-        // alert(error)
-        console.error("Unexpected error:", error);
-      }
-      alert("Registration failed! Please check your network connection.");
+      console.error("Registration error:", error);
+      alert(error instanceof Error ? error.message : "Registration failed! Please check your network connection.");
       throw error;
     }
   }
