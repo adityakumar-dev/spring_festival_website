@@ -197,9 +197,9 @@ export const api = {
   
     try {
       console.log("Sending registration request to:", `${API_BASE_URL}/users/create/`);
-      const response = await axios.post(`${API_BASE_URL}/users/create/`, formData);
+      const response = await axios.post(`${API_BASE_URL}/users/create/`, formData, {
+        timeout: 20000, maxRedirects : 10});
   
-      // Directly use response.data since Axios automatically parses JSON responses
       const result = response.data;
   
       console.log("Registration response:", result);
@@ -241,8 +241,20 @@ export const api = {
         throw new Error(result.message || "Registration failed! Please switch to Chrome browser.");
       }
     } catch (error) {
-      alert("Registration failed! Please switch to Chrome browser.");
-      console.error("Registration request failed:", error);
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error:", error.message);
+        if (error.response) {
+          // alert(error.response.data.message)
+          console.error("Error response:", error.response.data);
+        } else {
+          // alert(error.request)
+          console.error("Error request:", error.request);
+        }
+      } else {
+        // alert(error)
+        console.error("Unexpected error:", error);
+      }
+      alert("Registration failed! Please check your network connection.");
       throw error;
     }
   }
