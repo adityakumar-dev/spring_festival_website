@@ -1,7 +1,7 @@
 import { Console } from "console";
 import { METHODS } from "http";
 import { useState } from "react";
-
+import axios from 'axios';
 export const API_BASE_URL = 'https://api.vmsbutu.it.com'
 export const url = API_BASE_URL;
 export interface RegisterData {
@@ -88,8 +88,7 @@ export const api = {
         body: formData,
         headers: {
           'Accept': 'application/json',
-          'ngrok-skip-browser-warning': '69420',
-          'Bypass-Tunnel-Reminder': 'true',
+      
         }
       })
 
@@ -151,8 +150,7 @@ export const api = {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'ngrok-skip-browser-warning': '69420',
-        'Bypass-Tunnel-Reminder': 'true',
+       
       },
     })
     console.log(response);
@@ -182,7 +180,8 @@ export const api = {
       console.error('Aadhar validation error:', error)
       throw error
     }
-  },async register(data: RegisterData) {
+  },
+  async register(data: RegisterData) {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("email", data.email);
@@ -198,26 +197,10 @@ export const api = {
   
     try {
       console.log("Sending registration request to:", `${API_BASE_URL}/users/create/`);
+      const response = await axios.post(`${API_BASE_URL}/users/create/`, formData);
   
-      const response = await fetch(`${API_BASE_URL}/users/create/`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          Accept: "application/json",
-          "ngrok-skip-browser-warning": "69420",
-          "Bypass-Tunnel-Reminder": "true",
-        },
-      });
-  
-      const responseText = await response.text();
-      let result;
-  
-      try {
-        result = JSON.parse(responseText);
-      } catch (jsonError) {
-        console.error("Error parsing JSON response:", responseText);
-        throw new Error("Invalid response from server");
-      }
+      // Directly use response.data since Axios automatically parses JSON responses
+      const result = response.data;
   
       console.log("Registration response:", result);
   
@@ -255,10 +238,10 @@ export const api = {
   
         return result;
       } else {
-        throw new Error(result.message || "Registration failed ! please switch to chrome browser");
+        throw new Error(result.message || "Registration failed! Please switch to Chrome browser.");
       }
     } catch (error) {
-      alert("Registration failed ! please switch to chrome browser");
+      alert("Registration failed! Please switch to Chrome browser.");
       console.error("Registration request failed:", error);
       throw error;
     }
