@@ -332,7 +332,7 @@ export default function RegisterPage() {
                 <>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">
-                      Institution /Organization Name
+                      Institution /Organization Name (Please always use unique group name )
                     </label>
                     <input
                       type="text"
@@ -378,10 +378,12 @@ export default function RegisterPage() {
                NOTE : "Please upload valid and latest profile picture"
               </p>
             </div>
-            
-        <div className="flex items-center justify-center">
-          <h2 className="text-xl sm:text-sm font-semibold ">If your registration failed please switch to chrome browser or device and try again</h2>
-        </div>
+            <div>
+              <p>NOTE : "If your registration failed please switch to chrome browser or device and try again"</p>
+            </div>
+        {/* <div className="flex items-center justify-center">
+          <h2 className="text-xl sm:text-sm font-semibold "></h2>
+        </div> */}
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}

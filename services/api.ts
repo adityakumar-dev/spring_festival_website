@@ -88,8 +88,6 @@ export const api = {
         body: formData,
         headers: {
           'Accept': 'application/json',
-          'ngrok-skip-browser-warning': '69420',
-          'Bypass-Tunnel-Reminder': 'true',
         }
       })
 
@@ -151,8 +149,7 @@ export const api = {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'ngrok-skip-browser-warning': '69420',
-        'Bypass-Tunnel-Reminder': 'true',
+        
       },
     })
     console.log(response);
@@ -182,7 +179,8 @@ export const api = {
       console.error('Aadhar validation error:', error)
       throw error
     }
-  },async register(data: RegisterData) {
+  },
+  async register(data: RegisterData) {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("email", data.email);
@@ -204,12 +202,14 @@ export const api = {
         body: formData,
         headers: {
           Accept: "application/json",
-          "ngrok-skip-browser-warning": "69420",
-          "Bypass-Tunnel-Reminder": "true",
+        
         },
       });
-  
+      console.log('Response status:', response.status)
       const responseText = await response.text();
+
+      console.log('Response body:', responseText)
+      console.log("Respnse json : ", JSON.parse(responseText))
       let result;
   
       try {
