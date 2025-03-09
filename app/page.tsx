@@ -172,7 +172,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col md:flex-row items-center justify-center gap-4">
               <Link
-                href="/register"
+                href="https://enabled-flowing-bedbug.ngrok-free.app/"
                 className="bg-yellow-600 text-white px-8 md:px-12 py-3 md:py-5 rounded-full text-lg md:text-xl hover:bg-blue-700 transition duration-300 w-full md:w-auto shadow-lg hover:shadow-xl"
               >
                 Register Now <span className="ml-2">→</span>
