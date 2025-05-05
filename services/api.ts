@@ -3,19 +3,17 @@ import { METHODS } from "http";
 import { useState } from "react";
 import axios from 'axios';
 import { redirect } from "next/dist/server/api-utils";
-export const API_BASE_URL = 'https://api.vmsbutu.it.com'
+export const API_BASE_URL = 'https://enabled-flowing-bedbug.ngrok-free.app'
 export const url = API_BASE_URL;
 export interface RegisterData {
   name: string
   email: string
-  userType: 'individual' | 'instructor' | 'student'
-  institutionName?: string
-  institution_id?: string
-  instructor_id?: string
-  groupSize?: number
+  userType: 'individual' | 'group'
   photo: File
-  unique_id_type: string  // This should be one of: "aadhar", "pan", "driving_license", "passport", "voter_id"
-  unique_id: string
+  id_type: string,
+  id : string,
+  group_name: string,
+  count : string,
 }
 interface CreateAppUser {
   admin_name: string,
@@ -36,37 +34,7 @@ interface RegisterGroupData {
 export const api = {
 
 
-  async registerGroup(data: RegisterGroupData) {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("count", data.group_size.toString());
-    try{
-
-    
-    const response = await fetch(`${API_BASE_URL}/institutions`, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Accept: "application/json",
-      },
-    });
-    if (!response.ok) {
-      console.log(response.status)
-      // throw new Error('Failed to register group')
-      alert("Failed to register group")
-      return false
-    }
-    else{
-      alert("Group registered successfully")
-      return response.json()
-    }
-    }
-    catch(error){
-      console.error('Error in registerGroup:', error)
-      alert("Failed to register group")
-      return false
-    }
-  },
+ 
   latest_visitor_card: "",
   base: (card : string) => `${API_BASE_URL}/users/download-visitor-card/?card_path=${encodeURIComponent(card)}`,
   async createAppUser(data: CreateAppUser) {
@@ -115,33 +83,29 @@ export const api = {
     }
   },
 
-  async verifyAdmin(username: string, password: string) {
-    const formData = new FormData()
-    formData.append('admin_name', username)
-    formData.append('admin_password', password)
-    const response = await fetch(`${API_BASE_URL}/app_users/check/admin`, { method: 'POST', body: formData })
-    if (response.ok) {
-      const result = await response.json()
-      console.log(result)
-      return result['status']
-    } else {
-      return false;
-    }
-  }
-  ,
   async validateEmail(email: string) {
-    const response = await fetch(`${API_BASE_URL}/users/check/email/${email}`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-      },
-    })
-    console.log(response);
-    if (!response.ok) {
-      console.log(response.status)
-      throw new Error(`Failed to validate email`)
-    }else{
-      return response.json()
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/check/email/${email}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      });
+
+      console.log('Email validation response:', response);
+      
+      if (!response.ok) {
+        console.error('Email validation failed:', response.status);
+        throw new Error(`Failed to validate email: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Email validation data:', data);
+      return data;
+    } catch (error) {
+      console.error('Email validation error:', error);
+      throw error;
     }
   },
   // Get all institutions

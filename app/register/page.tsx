@@ -14,7 +14,7 @@ import {
   QrCode,
 } from "lucide-react";
 import Link from "next/link";
-import { Checkbox } from "@/components/ui/checkbox";
+// import { Checkbox } from "@/compo nents/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -25,6 +25,8 @@ import { api, RegisterData, url } from "@/services/api";
 import { Spinner } from "@/components/ui/spinner";
 import router, { useRouter } from "next/router";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import { Toast } from "@/components/ui/toast";
+import DownloadCardPopup from "@/components/download_card";
 
 interface Institution {
   institution_id: number;
@@ -69,12 +71,12 @@ export default function RegisterPage() {
     firstName: "",
     lastName: "",
     email: "",
-    id_type: "",
     groupSize: "",
-    idType: "aadhar",
+    id_type: "aadhar",
+    id : "",
     userType: "individual", // "individual", "institution_admin", "institution_student"
-    institutionName: "",
-    institutionId: "",
+    group_name: "",
+    count : "1",
     photo: null as File | null,
   });
 
@@ -85,6 +87,10 @@ export default function RegisterPage() {
   const [institution, setInstitution] = useState<Institution[]>([]);
   const [registrationData, setRegistrationData] = useState<RegistrationResponse | null>(null);
   const [groupSize, setGroupSize] = useState<number | "">(""); // Number of people in the group
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [download,setDownload] = useState<boolean>(false)
+  const [isDownloadPopupOpen, setIsDownloadPopupOpen] = useState(false);
+  const [downloadCardPath, setDownloadCardPath] = useState<string | null>(null);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -98,110 +104,93 @@ export default function RegisterPage() {
     }
   };
 
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
-
-
-      // Ensure photo is not null before proceeding
-      if (!formData.photo) {
-        alert("Please upload a valid profile photo.");
-        setIsSubmitting(false);
-        setIsLoadingOverlayOpen(false);
-        return;
-      }
-      if(formData.idType == ""){
-        alert("Please select a valid id type");
-        setIsSubmitting(false);
-        setIsLoadingOverlayOpen(false);
-        return;
-      }
-      if(formData.id_type == ""){
-        alert("Please enter a valid id number");
-        setIsSubmitting(false);
-        setIsLoadingOverlayOpen(false);
-        return;
-      }
-      if(formData.firstName == ""){
-        alert("Please enter a valid first name");
-          setIsSubmitting(false);
-        setIsLoadingOverlayOpen(false);
-        return;
-      }
-      if(formData.email == ""){
-        alert("Please enter a valid email");
-        setIsSubmitting(false);
-        setIsLoadingOverlayOpen(false);
-        return;
-      }
-      
-      
-      setIsLoadingOverlayOpen(true);
+    setIsLoadingOverlayOpen(true);
     setLoadingMessage("Checking email...");
+
     try {
-      // Check email
-      // let registerData = {};
-
-      const emailResponse = await api.validateEmail(formData.email);
-      if (emailResponse["exists"]) {
-        alert("This email is already registered. Please use a different email.");
+      // Validate required fields
+      if (!formData.photo) {
+        showToast("Please upload a valid profile photo.", "error");
         return;
       }
-      if(formData.userType === "instructor"){
-      setLoadingMessage("Registering institution...");
-      const groupResponse = await api.registerGroup({
-        name: formData.institutionName,
-        group_size: Number(formData.groupSize),
+      if (!formData.id_type) {
+        showToast("Please select a valid ID type", "error");
+        return;
+      }
+      if (!formData.id) {
+        showToast("Please enter a valid ID number", "error");
+        return;
+      }
+      if (!formData.firstName) {
+        showToast("Please enter a valid first name", "error");
+        return;
+      }
+      if (!formData.email) {
+        showToast("Please enter a valid email", "error");
+        return;
+      }
+
+      // Check if email exists
+      try {
+        setLoadingMessage("Validating email...");
+        const emailResponse = await api.validateEmail(formData.email);
+        console.log('Email validation response:', emailResponse);
+        
+        if (emailResponse.exists === true) {
+          showToast("This email is already registered. Please use a different email.", "error");
+          return;
+        }
+      } catch (error) {
+        console.error('Email validation error:', error);
+        showToast("Failed to validate email. Please try again.", "error");
+        return;
+      }
+
+      // Prepare form data for submission
+      const form = new FormData();
+      form.append("name", `${formData.firstName} ${formData.lastName}`);
+      form.append("email", formData.email);
+      form.append("image", formData.photo);
+      form.append("id_type", formData.id_type);
+      form.append("id", formData.id);
+      
+      if (formData.userType === "instructor") {
+        form.append("group_name", formData.group_name);
+        form.append("count", formData.count.toString());
+      } else {
+        form.append("group_name", "");
+        form.append("count", "1");
+      }
+
+      // Submit the form
+      const response = await fetch("https://enabled-flowing-bedbug.ngrok-free.app/users/create", {
+        method: "POST",
+        body: form,
       });
-      // registerData.institution_id = groupResponse.institution.id;
-      if (!groupResponse) {
-        alert("Failed to register group");
-        return;
+console.log(response)
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Registration failed");
       }
-      setLoadingMessage("Registering user...");
-      const registerData = {
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        userType: formData.userType as "individual" | "instructor",
-        photo: formData.photo,
-        unique_id_type: formData.idType,
-        unique_id: formData.id_type,
-        institution_id: groupResponse.institution.id,
-        institutionName: formData.institutionName,
-        groupSize: groupSize !== "" ? groupSize : undefined,
-      };
-     await api.register(registerData);
-      alert("Registration successful!");
-    }
-
-   
-      if(formData.userType === "individual"){
-        // Proceed to register user
-        setLoadingMessage("Registering user...");
-      const registerData = {
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        userType: formData.userType as "individual" | "instructor",
-        photo: formData.photo,
-        unique_id_type: formData.idType,
-        unique_id: formData.id_type,
-        institutionName: formData.institutionName,
-        groupSize: groupSize !== "" ? groupSize : undefined,
-      };
-     await api.register(registerData);
-      alert("Registration successful!");
-    }
-     
-
+      const parsedData = await response.json()
+      const cardPath = parsedData['card_path']
+      setDownloadCardPath(cardPath);
+      setIsDownloadPopupOpen(true);
+      showToast("Registration successful!", "success");
+      // Optional: Redirect to success page or clear form
     } catch (error) {
       console.error("Registration failed:", error);
-      alert(error instanceof Error ? error.message : "Registration failed");
+      showToast(error instanceof Error ? error.message : "Registration failed", "error");
     } finally {
       setIsSubmitting(false);
       setIsLoadingOverlayOpen(false);
     }
-    setIsLoading(false);
-    setIsSubmitting(false);
-    setIsLoadingOverlayOpen(false);
   };
 
   const renderStep = () => {
@@ -260,18 +249,18 @@ export default function RegisterPage() {
               <div
                 key={type}
                 className={`flex items-center justify-center p-3 rounded-lg cursor-pointer transition-all ${
-                  formData.idType === type
+                  formData.id_type === type
                     ? "bg-yellow-100 border-2 border-yellow-600"
                     : "bg-gray-50 border-2 border-transparent hover:bg-yellow-50"
                 }`}
-                onClick={() => setFormData({ ...formData, idType: type, id_type: "" })}
+                onClick={() => setFormData({ ...formData, id_type: type })}
               >
                 <input
                   type="radio"
                   className="hidden"
                   name="idType"
                   value={type}
-                  checked={formData.idType === type}
+                  checked={formData.id_type === type}
                   onChange={() => {}}
                 />
                 <label className="cursor-pointer capitalize">
@@ -282,22 +271,22 @@ export default function RegisterPage() {
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
-              {formData.idType.replace("_", " ").charAt(0).toUpperCase() + 
-               formData.idType.replace("_", " ").slice(1)} Number
+              {formData.id_type.replace("_", " ").charAt(0).toUpperCase() + 
+               formData.id_type.replace("_", " ").slice(1)} Number
             </label>
             <div className="relative">
               <input
-                name="id_type"
-                value={formData.id_type}
+                name="id"
+                value={formData.id}
                 maxLength={
-                  formData.idType === "aadhar" ? 12 :
-                  formData.idType === "pan" ? 10 :
-                  formData.idType === "passport" ? 8 :
-                  formData.idType === "voter_id" ? 10 : 15
+                  formData.id_type === "aadhar" ? 12 :
+                  formData.id_type === "pan" ? 10 :
+                  formData.id_type === "passport" ? 8 :
+                  formData.id_type === "voter_id" ? 10 : 15
                 }
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
-                placeholder={`Enter ${formData.idType.replace("_", " ")} number`}
+                placeholder={`Enter ${formData.id_type.replace("_", " ")} number`}
               />
             </div>
           </div>
@@ -306,40 +295,46 @@ export default function RegisterPage() {
               <label className="text-sm font-medium text-gray-700">
                 Select User Type
               </label>
-              <Select
-                name="userType"
-                value={formData.userType}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, userType: value })
-                }
-              >
-                <SelectTrigger>
-                  {formData.userType === "individual"
-                    ? "Individual"
-                    : formData.userType === "instructor"
-                    ? "Group Leader"
-                   
-                    : "Select user type"}
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="individual">Individual</SelectItem>
-                  <SelectItem value="instructor">Group Leader</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                {[
+                  { value: "individual", label: "Individual" },
+                  { value: "instructor", label: "Group Leader" }
+                ].map((type) => (
+                  <div
+                    key={type.value}
+                    className={`flex items-center justify-center p-3 rounded-lg cursor-pointer transition-all ${
+                      formData.userType === type.value
+                        ? "bg-yellow-100 border-2 border-yellow-600"
+                        : "bg-gray-50 border-2 border-transparent hover:bg-yellow-50"
+                    }`}
+                    onClick={() => setFormData({ ...formData, userType: type.value })}
+                  >
+                    <input
+                      type="radio"
+                      className="hidden"
+                      name="userType"
+                      value={type.value}
+                      checked={formData.userType === type.value}
+                      onChange={() => {}}
+                    />
+                    <label className="cursor-pointer">
+                      {type.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
 
-              {(
-                formData.userType === "instructor") && (
+              {formData.userType === "instructor" && (
                 <>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">
-                      Institution /Organization Name (Please always use unique group name )
+                      Institution/Organization Name (Please always use unique group name)
                     </label>
                     <input
                       type="text"
-                      value={formData.institutionName}
-                      onChange={(e) =>
-                        setFormData({ ...formData, institutionName: e.target.value })
-                      }
+                      name="group_name"
+                      value={formData.group_name}
+                      onChange={handleInputChange}
                       className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
                       placeholder="Enter institution name"
                     />
@@ -350,8 +345,10 @@ export default function RegisterPage() {
                     </label>
                     <input
                       type="number"
-                      value={groupSize}
-                      onChange={(e) => setGroupSize(Number(e.target.value))}
+                      name="count"
+                      value={formData.count}
+                      onChange={handleInputChange}
+                      min="2"
                       className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-yellow-200 focus:border-yellow-400"
                       placeholder="Enter number of people"
                     />
@@ -378,9 +375,9 @@ export default function RegisterPage() {
                NOTE : "Please upload valid and latest profile picture"
               </p>
             </div>
-            <div>
+            {/* <div>
               <p>NOTE : "If your registration failed please switch to chrome browser or device and try again"</p>
-            </div>
+            </div> */}
         {/* <div className="flex items-center justify-center">
           <h2 className="text-xl sm:text-sm font-semibold "></h2>
         </div> */}
@@ -418,6 +415,13 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white py-6 sm:py-12">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <LoadingOverlay isOpen={isLoadingOverlayOpen} message={loadingMessage} />
       <div className="container mx-auto px-4 sm:px-6">
         <Link
@@ -529,6 +533,13 @@ export default function RegisterPage() {
             ) : null}
           </div> */}
         </div>
+        {downloadCardPath && (
+          <DownloadCardPopup
+            cardPath={downloadCardPath}
+            isOpen={isDownloadPopupOpen}
+            onClose={() => setIsDownloadPopupOpen(false)}
+          />
+        )}
       </div>
     </div>
   );
