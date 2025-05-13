@@ -102,7 +102,8 @@ export default function LandingPage() {
                 {/* <Link href="/events" className="text-white hover:text-yellow-400 transition-colors">Events</Link>
                 <Link href="/gallery" className="text-white hover:text-yellow-400 transition-colors">Gallery</Link> */}
                 <Link href="/vasontutsav2025" className="text-white hover:text-yellow-400 transition-colors">Past Events</Link>
-                <Link href="/register" className="text-white hover:text-yellow-400 transition-colors">Temporary Registration</Link>
+                <Link href="/register" className="text-white hover:text-yellow-400 transition-colors">Registration</Link>
+                <Link href="/abhaydhir" className="text-white hover:text-yellow-400 transition-colors">Abhaydhir App</Link>
                 {/* <Link href="/login" className="text-white hover:text-yellow-400 transition-colors">Login</Link> */}
                 {/* <Link href="/register" className="bg-yellow-600 text-white px-6 py-2 rounded-full hover:bg-yellow-500 transition duration-300"> */}
                   {/* Register Now */}
