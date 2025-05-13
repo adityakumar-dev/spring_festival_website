@@ -126,8 +126,8 @@ export default function AnalyticsPage() {
         <div className="container mx-auto px-6 relative z-10">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">Implementation Success</h2>
           
-        
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
+          <div className="flex flex-wrap justify-center gap-8 max-w-[1200px] mx-auto">
+            <div className="w-full sm:w-[calc(100%-2rem)] md:w-[calc(50%-2rem)] lg:w-[calc(33.33%-2rem)] bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white flex items-center justify-center">
                 <Users className="w-10 h-10 text-blue-600" />
               </div>
@@ -135,7 +135,7 @@ export default function AnalyticsPage() {
               <p className="text-gray-700">Successfully processed over 15,000 visitors with automated verification</p>
             </div>
 
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
+            <div className="w-full sm:w-[calc(100%-2rem)] md:w-[calc(50%-2rem)] lg:w-[calc(33.33%-2rem)] bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white flex items-center justify-center">
                 <QrCode className="w-10 h-10 text-blue-600" />
               </div>
@@ -143,7 +143,7 @@ export default function AnalyticsPage() {
               <p className="text-gray-700">Zero-error rate in QR code scanning and validation</p>
             </div>
 
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
+            <div className="w-full sm:w-[calc(100%-2rem)] md:w-[calc(50%-2rem)] lg:w-[calc(33.33%-2rem)] bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white flex items-center justify-center">
                 <Clock className="w-10 h-10 text-blue-600" />
               </div>
@@ -151,15 +151,7 @@ export default function AnalyticsPage() {
               <p className="text-gray-700">Reduced entry verification time from 5 minutes to 2.5 seconds</p>
             </div>
 
-            {/* <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white flex items-center justify-center">
-                <Building className="w-10 h-10 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Institution Management</h3>
-              <p className="text-gray-700">Managed 100+ institutions with group registration system</p>
-            </div> */}
-
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
+            <div className="w-full sm:w-[calc(100%-2rem)] md:w-[calc(50%-2rem)] lg:w-[calc(33.33%-2rem)] bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white flex items-center justify-center">
                 <UserCheck className="w-10 h-10 text-blue-600" />
               </div>
@@ -167,7 +159,7 @@ export default function AnalyticsPage() {
               <p className="text-gray-700">100% accuracy in visitor verification with AI-based system</p>
             </div>
 
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
+            <div className="w-full sm:w-[calc(100%-2rem)] md:w-[calc(50%-2rem)] lg:w-[calc(33.33%-2rem)] bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white flex items-center justify-center">
                 <ChartBar className="w-10 h-10 text-blue-600" />
               </div>
