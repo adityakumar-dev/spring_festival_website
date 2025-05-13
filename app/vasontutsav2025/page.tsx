@@ -92,23 +92,23 @@ export default function AnalyticsPage() {
           </p>
           
           {/* Key Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-6xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
               <div className="text-4xl md:text-5xl font-bold mb-2">15,000+</div>
               <div className="text-lg">Total Registrations</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
               <div className="text-4xl md:text-5xl font-bold mb-2">98%</div>
-              <div className="text-lg">Successful Entries</div>
+              <div className="text-lg">Successful Registration & Entries</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
               <div className="text-4xl md:text-5xl font-bold mb-2">2.5s</div>
               <div className="text-lg">Avg. Verification Time</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+            {/* <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
               <div className="text-4xl md:text-5xl font-bold mb-2">100+</div>
               <div className="text-lg">Institution Groups</div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -126,8 +126,8 @@ export default function AnalyticsPage() {
         <div className="container mx-auto px-6 relative z-10">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">Implementation Success</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
+        
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white flex items-center justify-center">
                 <Users className="w-10 h-10 text-blue-600" />
               </div>
@@ -151,13 +151,13 @@ export default function AnalyticsPage() {
               <p className="text-gray-700">Reduced entry verification time from 5 minutes to 2.5 seconds</p>
             </div>
 
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
+            {/* <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white flex items-center justify-center">
                 <Building className="w-10 h-10 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Institution Management</h3>
               <p className="text-gray-700">Managed 100+ institutions with group registration system</p>
-            </div>
+            </div> */}
 
             <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-white">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white flex items-center justify-center">
@@ -199,10 +199,7 @@ export default function AnalyticsPage() {
                   <span>Group Registrations</span>
                   <span className="font-semibold">3,289</span>
                 </li>
-                <li className="flex justify-between">
-                  <span>Institution Groups</span>
-                  <span className="font-semibold">127</span>
-                </li>
+               
               </ul>
             </div>
 
@@ -217,10 +214,7 @@ export default function AnalyticsPage() {
                   <span>QR Scan Success Rate</span>
                   <span className="font-semibold">99.9%</span>
                 </li>
-                <li className="flex justify-between">
-                  <span>Face Recognition Accuracy</span>
-                  <span className="font-semibold">98.5%</span>
-                </li>
+                
                 <li className="flex justify-between">
                   <span>System Uptime</span>
                   <span className="font-semibold">99.99%</span>

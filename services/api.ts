@@ -3,7 +3,7 @@ import { METHODS } from "http";
 import { useState } from "react";
 import axios from 'axios';
 import { redirect } from "next/dist/server/api-utils";
-export const API_BASE_URL = 'https://enabled-flowing-bedbug.ngrok-free.app'
+export const API_BASE_URL = 'https://api.vmsbutu.it.com'
 export const url = API_BASE_URL;
 export interface RegisterData {
   name: string

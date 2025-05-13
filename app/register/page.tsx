@@ -169,7 +169,7 @@ export default function RegisterPage() {
       }
 
       // Submit the form
-      const response = await fetch("https://enabled-flowing-bedbug.ngrok-free.app/users/create", {
+      const response = await fetch("https://api.vmsbutu.it.com/users/create", {
         method: "POST",
         body: form,
       });

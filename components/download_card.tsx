@@ -6,7 +6,7 @@ interface DownloadCardProps {
   onClose: () => void;
 }
 
-const API_BASE_URL = 'https://enabled-flowing-bedbug.ngrok-free.app';
+const API_BASE_URL = 'https://api.vmsbutu.it.com';
 
 const DownloadCardPopup: React.FC<DownloadCardProps> = ({ cardPath, isOpen, onClose }) => {
   if (!isOpen) return null;
