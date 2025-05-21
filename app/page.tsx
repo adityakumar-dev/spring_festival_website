@@ -152,10 +152,10 @@ export default function LandingPage() {
                 Register Now <span className="ml-2">→</span>
               </Link> */}
               <Link
-                href="/vasontutsav2025"
+                href="/register"
                 className="bg-transparent border-2 border-white text-white px-8 md:px-12 py-3 md:py-4 rounded-full text-lg md:text-xl hover:bg-white/10 transition duration-300 w-full md:w-auto"
               >
-                Explore Spring Festival 2025
+                Register
               </Link>
             </div>
           </div>
