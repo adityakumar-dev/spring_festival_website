@@ -3,8 +3,10 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -12,7 +14,7 @@ export default function Navbar() {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo - Made more compact for mobile */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 " onClick={() => router.push('/')}>
             <Image src="/images/emblem_white.svg" alt="Logo" width={40} height={40} 
               className="w-8 h-8 md:w-10 md:h-10 brightness-0 invert" />
             <div className="flex flex-col">
