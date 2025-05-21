@@ -4,13 +4,51 @@ import { useState } from "react"
 import { Download, Shield, Smartphone, AlertTriangle, CheckCircle2, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import Navbar from "../components/Navbar"
+import { LoadingBar } from "../components/loading-bar"
 
 export default function InstallationGuidePage() {
   const [showWarning, setShowWarning] = useState(true);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Warning Banner */}
+      <LoadingBar />
+      <header className="w-full relative bg-cover bg-center h-screen">
+        <div
+          className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/spring_festival/image4.jpg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        
+        <Navbar />
+
+        {/* Hero Content */}
+        <div className="flex flex-col items-center justify-center h-[calc(100vh-80px)] px-4">
+          <div className="container mx-auto px-4 text-center relative z-10">
+            <h1 className="text-4xl md:text-7xl font-bold mb-4 text-white animate-fade-in-down leading-tight">
+              ABHAYDHIR APP
+            </h1>
+            <h2 className="text-2xl md:text-6xl mb-6 text-white animate-fade-in-down leading-tight">
+              Download & Installation Guide
+            </h2>
+            <p className="text-lg md:text-xl mb-8 text-gray-200 animate-fade-in-up max-w-3xl mx-auto">
+            Abhaydhir is a mobile application that allows Security Guards to manage visitors entry and exit.
+            </p>
+            <a
+              href="/app/app-release.apk"
+              download
+              className="inline-flex items-center px-8 md:px-12 py-3 md:py-4 bg-yellow-600 text-white rounded-full text-lg md:text-xl hover:bg-yellow-500 transition duration-300 shadow-lg hover:shadow-xl"
+            >
+              <Download className="w-6 h-6 mr-2" />
+              Download APK
+            </a>
+          </div>
+        </div>
+      </header>
+
       {showWarning && (
         <div className="bg-yellow-50 border-b border-yellow-200">
           <div className="container mx-auto px-4 py-3">

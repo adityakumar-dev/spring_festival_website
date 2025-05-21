@@ -5,8 +5,9 @@ import Image from "next/image"
 import { Users, ChartBar, Calendar, CheckCircle, UserCheck, QrCode, Clock, Building } from "lucide-react"
 import { useState, useEffect } from "react"
 import { LoadingBar } from "@/components/loading-bar"
+import Navbar from "../components/Navbar"
 
-export default function AnalyticsPage() {
+export default function VasontutsavPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -57,61 +58,63 @@ export default function AnalyticsPage() {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
-        <div className="flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-lg font-semibold text-gray-700">Loading Analytics...</p>
+      <div>
+        <LoadingBar />
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-white">
+          <div className="flex flex-col items-center">
+            <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-lg font-semibold text-gray-700">Loading Analytics...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <LoadingBar />
-      
-      {/* Hero Section with Success Metrics */}
-      <section className="relative bg-cover bg-center h-screen">
-        {images.map((image, index) => (
-          <div
-            key={image}
-            className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out"
-            style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("${image}")`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              opacity: currentImageIndex === index ? 1 : 0,
-            }}
-          />
-        ))}
-        
-        <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-center text-white">
-          <h1 className="text-4xl md:text-6xl font-bold mb-8 text-center">Spring Festival 2024 Success Story</h1>
-          <p className="text-xl md:text-2xl mb-12 text-center max-w-3xl">
-            Transforming Visitor Management with Advanced Technology
-          </p>
-          
-          {/* Key Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
-              <div className="text-4xl md:text-5xl font-bold mb-2">15,000+</div>
-              <div className="text-lg">Total Registrations</div>
+      <header className="w-full relative bg-cover bg-center h-screen">
+        <div
+          className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/spring_festival/image4.jpg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        <Navbar />
+
+        {/* Hero Content */}
+        <div className="flex flex-col items-center justify-center h-[calc(100vh-80px)] px-4">
+          <div className="container mx-auto px-4 text-center relative z-10">
+            <h1 className="text-4xl md:text-7xl font-bold mb-4 text-white animate-fade-in-down leading-tight">
+              SPRING FESTIVAL 2024
+            </h1>
+            <h2 className="text-2xl md:text-6xl mb-6 text-white animate-fade-in-down leading-tight">
+              Success Story & Analytics
+            </h2>
+            <p className="text-lg md:text-xl mb-8 text-gray-200 animate-fade-in-up max-w-3xl mx-auto">
+              Discover how we transformed visitor management with advanced technology
+            </p>
+            
+            {/* Key Metrics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <div className="text-4xl font-bold text-white mb-2">15,000+</div>
+                <div className="text-gray-200">Total Registrations</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <div className="text-4xl font-bold text-white mb-2">98%</div>
+                <div className="text-gray-200">Success Rate</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <div className="text-4xl font-bold text-white mb-2">2.5s</div>
+                <div className="text-gray-200">Avg. Verification Time</div>
+              </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
-              <div className="text-4xl md:text-5xl font-bold mb-2">98%</div>
-              <div className="text-lg">Successful Registration & Entries</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
-              <div className="text-4xl md:text-5xl font-bold mb-2">2.5s</div>
-              <div className="text-lg">Avg. Verification Time</div>
-            </div>
-            {/* <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
-              <div className="text-4xl md:text-5xl font-bold mb-2">100+</div>
-              <div className="text-lg">Institution Groups</div>
-            </div> */}
           </div>
         </div>
-      </section>
+      </header>
 
       {/* Implementation Success Section */}
       <section className="py-20 relative overflow-hidden" style={{ backgroundColor: '#F3FCE9' }}>

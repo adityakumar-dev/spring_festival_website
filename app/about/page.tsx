@@ -3,16 +3,37 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ShieldCheck, Users, Calendar, CheckCircle } from "lucide-react"
+import Navbar from "../components/Navbar"
+import { LoadingBar } from "../components/loading-bar"
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Hero Section */}
-      <header className="relative bg-cover bg-center h-[40vh]" style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("/images/spring_festival/image1.jpg")' }}>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">About Us</h1>
-            <p className="text-xl">Learn about our Visitor & Entry Management System</p>
+      <LoadingBar />
+      <header className="w-full relative bg-cover bg-center h-screen">
+        <div
+          className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/spring_festival/image1.jpg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        
+        <Navbar />
+
+        {/* Hero Content */}
+        <div className="flex flex-col items-center justify-center h-[calc(100vh-80px)] px-4">
+          <div className="container mx-auto px-4 text-center relative z-10">
+            <h1 className="text-4xl md:text-7xl font-bold mb-4 text-white animate-fade-in-down leading-tight">
+              ABOUT US
+            </h1>
+            <h2 className="text-2xl md:text-6xl mb-6 text-white animate-fade-in-down leading-tight">
+              Learn about our Visitor & Entry Management System
+            </h2>
+            <p className="text-lg md:text-xl mb-8 text-gray-200 animate-fade-in-up max-w-3xl mx-auto">
+              Discover how we're revolutionizing visitor management at Raj Bhawan Uttarakhand
+            </p>
           </div>
         </div>
       </header>
