@@ -99,8 +99,6 @@ export default function LandingPage() {
               <div className="hidden md:flex items-center space-x-8">
                 <Link href="/about" className="text-white hover:text-yellow-400 transition-colors">About</Link>
                 <Link href="/features" className="text-white hover:text-yellow-400 transition-colors">Features</Link>
-                {/* <Link href="/events" className="text-white hover:text-yellow-400 transition-colors">Events</Link>
-                <Link href="/gallery" className="text-white hover:text-yellow-400 transition-colors">Gallery</Link> */}
                 <Link href="/vasontutsav2025" className="text-white hover:text-yellow-400 transition-colors">Past Events</Link>
                 <Link href="/register" className="text-white hover:text-yellow-400 transition-colors">Registration</Link>
                 <Link href="/abhaydhir" className="text-white hover:text-yellow-400 transition-colors">Abhaydhir App</Link>
@@ -124,17 +122,12 @@ export default function LandingPage() {
             {/* Mobile Navigation */}
             {mobileMenuOpen && (
               <div className="md:hidden mt-4 pb-4 space-y-4">
-                <Link href="/about" className="block text-white hover:text-yellow-400 transition-colors">About</Link>
-                <Link href="/features" className="block text-white hover:text-yellow-400 transition-colors">Features</Link>
-                {/* <Link href="/events" className="block text-white hover:text-yellow-400 transition-colors">Events</Link>
-                <Link href="/gallery" className="block text-white hover:text-yellow-400 transition-colors">Gallery</Link> */}
-                <Link href="/vasontutsav2025" className="block text-white hover:text-yellow-400 transition-colors">Past Events</Link>
-                <Link href="/contact" className="block text-white hover:text-yellow-400 transition-colors">Contact</Link>
-                {/* <Link href="/login" className="block text-white hover:text-yellow-400 transition-colors">Login</Link>
-                <Link href="/register" className="block bg-yellow-600 text-white px-6 py-2 rounded-full hover:bg-yellow-500 transition duration-300 text-center">
-                  Register Now
-                </Link> */}
-              </div>
+                <Link href="/about" className="text-white hover:text-yellow-400 transition-colors">About</Link>
+                <Link href="/features" className="text-white hover:text-yellow-400 transition-colors">Features</Link>
+                <Link href="/vasontutsav2025" className="text-white hover:text-yellow-400 transition-colors">Past Events</Link>
+                <Link href="/register" className="text-white hover:text-yellow-400 transition-colors">Registration</Link>
+                <Link href="/abhaydhir" className="text-white hover:text-yellow-400 transition-colors">Abhaydhir App</Link>
+                </div>
             )}
           </div>
         </nav>
